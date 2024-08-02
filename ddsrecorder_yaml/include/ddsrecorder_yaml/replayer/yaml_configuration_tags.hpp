@@ -41,6 +41,15 @@ constexpr const char* REPLAYER_REPLAY_RATE_TAG("rate");
 constexpr const char* REPLAYER_REPLAY_START_TIME_TAG("start-replay-time");
 constexpr const char* REPLAYER_REPLAY_TYPES_TAG("replay-types");
 
+////////////////////////////////////
+// Security related tags //
+////////////////////////////////////
+constexpr const char* IDENTIFY_CA_FILE_PATH_TAG("identify_ca_fname");
+constexpr const char* IDENTIFY_CERT_FILE_PATH_TAG("identity_cert_fname");
+constexpr const char* IDENTIFY_KEY_FILE_PATH_TAG("identity_key_fname");
+constexpr const char* GOVERNANCE_FILE_PATH_TAG("governance_fname");
+constexpr const char* PERMISSION_FILE_PATH_TAG("permission_fname");
+
 } /* namespace yaml */
 } /* namespace ddsrecorder */
 } /* namespace eprosima */

@@ -16,6 +16,7 @@
 
 #include <memory>
 #include <set>
+#include <curl/curl.h>
 
 #include <cpp_utils/thread_pool/pool/SlotThreadPool.hpp>
 #include <cpp_utils/ReturnCode.hpp>
@@ -69,6 +70,7 @@ public:
             const DdsRecorderStateCode& init_state,
             const std::string& file_name = "");
 
+    ~DdsRecorder();
     /**
      * Reconfigure the Recorder with the new configuration.
      *
@@ -94,6 +96,8 @@ public:
 
     //! Trigger event (in \c mcap_handler_)
     void trigger_event();
+
+    void log_message(const std::string& topic_str, const std::string& type_name, const std::string& source, const std::string& payload_data, const uint64_t publishTime);
 
 protected:
 
@@ -134,6 +138,9 @@ protected:
 
     //! DDS Pipe
     std::unique_ptr<ddspipe::core::DdsPipe> pipe_;
+
+    CURL *curl_;
+    curl_slist* headers_{NULL};
 };
 
 } /* namespace recorder */

@@ -1,0 +1,8 @@
+dds:
+  domain: 11
+  
+identify_ca_fname: "certs/cacert.pem"
+identity_cert_fname: "certs/Body_cert.pem"
+identity_key_fname: "certs/Body.key"
+governance_fname: "certs/governance.smime"
+permission_fname: "certs/permissions_Body.smime"

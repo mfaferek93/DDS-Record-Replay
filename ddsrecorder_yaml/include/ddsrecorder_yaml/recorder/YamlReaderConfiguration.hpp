@@ -89,6 +89,13 @@ public:
     unsigned int cleanup_period;
     ddspipe::core::types::TopicQoS topic_qos{};
 
+    // InfluxDB config
+    bool enable_influxdb = false;
+    std::string influxdb_server_url;
+    std::string influxdb_bucket;
+    std::string influxdb_organization;
+    std::string influxdb_token;
+
 protected:
 
     void load_ddsrecorder_configuration_(

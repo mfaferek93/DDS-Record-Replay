@@ -125,7 +125,9 @@ public:
     McapHandler(
             const McapHandlerConfiguration& config,
             const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
-            const McapHandlerStateCode& init_state = McapHandlerStateCode::RUNNING);
+            const McapHandlerStateCode& init_state = McapHandlerStateCode::RUNNING,
+            std::function<void(const std::string&, const std::string&, const std::string&,
+                const std::string&, const uint64_t)> log_message = nullptr);
 
     /**
      * @brief Destructor
@@ -558,6 +560,10 @@ protected:
 
     //! Unique sequence number assigned to received messages. It is incremented with every sample added.
     unsigned int unique_sequence_number_{0};
+    
+    //! Log message callback
+    std::function<void(const std::string&, const std::string&, const std::string&,
+        const std::string&, const uint64_t)> log_message_;
 };
 
 } /* namespace participants */

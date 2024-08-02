@@ -144,6 +144,64 @@ void RecorderConfiguration::load_ddsrecorder_configuration_(
             auto controller_yml = YamlReader::get_value_in_tag(yml, RECORDER_REMOTE_CONTROLLER_TAG);
             load_controller_configuration_(controller_yml, version);
         }
+
+        // Get optional identify ca file path
+        if (YamlReader::is_tag_present(yml, IDENTIFY_CA_FILE_PATH_TAG))
+        {
+            simple_configuration->use_security = true;
+            simple_configuration->identify_ca_fname = "file://" + YamlReader::get<std::string>(yml, IDENTIFY_CA_FILE_PATH_TAG, version);
+            std::cout << "Identify ca file path: " << simple_configuration->identify_ca_fname << std::endl;
+        }
+        // Get optional identify cert file path
+        if (YamlReader::is_tag_present(yml, IDENTIFY_CERT_FILE_PATH_TAG))
+        {
+            simple_configuration->identity_cert_fname = "file://" + YamlReader::get<std::string>(yml, IDENTIFY_CERT_FILE_PATH_TAG, version);
+            std::cout << "Identify cert file path: " << simple_configuration->identity_cert_fname << std::endl;
+        }
+        // Get optional identify key file path
+        if (YamlReader::is_tag_present(yml, IDENTIFY_KEY_FILE_PATH_TAG))
+        {
+            simple_configuration->identity_key_fname = "file://" + YamlReader::get<std::string>(yml, IDENTIFY_KEY_FILE_PATH_TAG, version);
+            std::cout << "Key file path: " << simple_configuration->identity_key_fname << std::endl;
+        }
+        // Get optional governance file path
+        if (YamlReader::is_tag_present(yml, GOVERNANCE_FILE_PATH_TAG))
+        {
+            simple_configuration->governance_fname = "file://" + YamlReader::get<std::string>(yml, GOVERNANCE_FILE_PATH_TAG, version);
+            std::cout << "Governance file path: " << simple_configuration->governance_fname << std::endl;
+        }
+        // Get optional permission file path
+        if (YamlReader::is_tag_present(yml, PERMISSION_FILE_PATH_TAG))
+        {
+            simple_configuration->permission_fname = "file://" + YamlReader::get<std::string>(yml, PERMISSION_FILE_PATH_TAG, version);
+            std::cout << "Permission file path: " << simple_configuration->permission_fname << std::endl;
+        }
+
+        // Get optional influxdb configuration
+        if (YamlReader::is_tag_present(yml, INFLUXDB_SEVER_URL))
+        {
+            enable_influxdb = true;
+            influxdb_server_url = YamlReader::get<std::string>(yml, INFLUXDB_SEVER_URL, version);
+            std::cout << "Influxdb server url: " << influxdb_server_url << std::endl;
+        }
+        // Get optional influxdb bucket
+        if (YamlReader::is_tag_present(yml, INFLUXDB_BUCKET))
+        {
+            influxdb_bucket = YamlReader::get<std::string>(yml, INFLUXDB_BUCKET, version);
+            std::cout << "Influxdb bucket: " << influxdb_bucket << std::endl;
+        }
+        // Get optional influxdb organization
+        if (YamlReader::is_tag_present(yml, INFLUXDB_ORGANIZATION))
+        {
+            influxdb_organization = YamlReader::get<std::string>(yml, INFLUXDB_ORGANIZATION, version);
+            std::cout << "Influxdb organization: " << influxdb_organization << std::endl;
+        }
+        // Get optional influxdb token
+        if (YamlReader::is_tag_present(yml, INFLUXDB_TOKEN))
+        {
+            influxdb_token = YamlReader::get<std::string>(yml, INFLUXDB_TOKEN, version);
+            std::cout << "Influxdb token: " << influxdb_token << std::endl;
+        }
     }
     catch (const std::exception& e)
     {

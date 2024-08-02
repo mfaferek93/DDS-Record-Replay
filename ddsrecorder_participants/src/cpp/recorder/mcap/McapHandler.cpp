@@ -85,11 +85,17 @@ Message::~Message()
 McapHandler::McapHandler(
         const McapHandlerConfiguration& config,
         const std::shared_ptr<ddspipe::core::PayloadPool>& payload_pool,
-        const McapHandlerStateCode& init_state /* = McapHandlerStateCode::RUNNING */)
+        const McapHandlerStateCode& init_state /* = McapHandlerStateCode::RUNNING */,
+        std::function<void(const std::string&, const std::string&, const std::string&,
+            const std::string&, const uint64_t)> log_message /* = nullptr */)
     : configuration_(config)
     , payload_pool_(payload_pool)
     , state_(McapHandlerStateCode::STOPPED)
 {
+    if (log_message)
+    {
+        log_message_ = log_message;
+    }
     logInfo(DDSRECORDER_MCAP_HANDLER,
             "Creating MCAP handler instance.");
 
@@ -602,6 +608,17 @@ void McapHandler::add_to_pending_nts_(
         Message& msg,
         const DdsTopic& topic)
 {
+    std::string topic_unique_name = topic.topic_unique_name();
+    std::string topic_str = topic_unique_name.substr(0, topic_unique_name.find("payload"));
+    std::string type_name = topic.type_name;
+    std::string source = "42dotCar";
+    std::string payload_data = std::to_string(*msg.payload.data);
+
+    if (log_message_)
+    {
+        log_message_(topic_str, type_name, source, payload_data, msg.publishTime);
+    }
+
     assert(configuration_.max_pending_samples != 0);
     if (configuration_.max_pending_samples > 0 &&
             pending_samples_[topic.type_name].size() == static_cast<unsigned int>(configuration_.max_pending_samples))
@@ -631,6 +648,7 @@ void McapHandler::add_to_pending_nts_(
 void McapHandler::add_pending_samples_nts_(
         const std::string& schema_name)
 {
+    std::cout << "Adding to pending schema name: " << schema_name << std::endl;
     logInfo(DDSRECORDER_MCAP_HANDLER, "Adding pending samples for type: " << schema_name << ".");
 
     if (pending_samples_.find(schema_name) != pending_samples_.end())

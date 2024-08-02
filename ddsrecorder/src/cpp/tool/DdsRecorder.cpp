@@ -81,7 +81,11 @@ DdsRecorder::DdsRecorder(
     mcap_handler_ = std::make_shared<participants::McapHandler>(
         handler_config,
         payload_pool_,
-        recorder_to_handler_state_(init_state));
+        recorder_to_handler_state_(init_state),
+        [this](const std::string& topic_str, const std::string& type_name, const std::string& source,
+            const std::string& payload_data, const uint64_t publishTime){
+                this->log_message(topic_str, type_name, source, payload_data, publishTime);}
+        );
 
     // Create DynTypes Participant
     dyn_participant_ = std::make_shared<DynTypesParticipant>(
@@ -117,6 +121,57 @@ DdsRecorder::DdsRecorder(
         payload_pool_,
         participants_database_,
         thread_pool_);
+
+    if (configuration_.enable_influxdb) {
+        // Set up CURL
+        curl_global_init(CURL_GLOBAL_ALL);
+        curl_ = curl_easy_init();
+    
+        if (curl_) {
+            std::string url = configuration_.influxdb_server_url + "/api/v2/write?org=" + configuration_.influxdb_organization
+                + "&bucket=" + configuration_.influxdb_bucket + "&precision=ns";
+
+            // Set the URL
+            curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
+
+            // Set the headers_
+            headers_ = curl_slist_append(headers_, ("Authorization: Token " + configuration_.influxdb_token).c_str());
+            headers_ = curl_slist_append(headers_, "Content-Type: text/plain; charset=utf-8");
+            headers_ = curl_slist_append(headers_, "Accept: application/json");
+            curl_easy_setopt(curl_, CURLOPT_HTTPHEADER, headers_);
+        }
+    }
+}
+
+DdsRecorder::~DdsRecorder()
+{
+    if (configuration_.enable_influxdb) {
+        curl_slist_free_all(headers_);
+        curl_easy_cleanup(curl_);
+    }
+}
+
+void DdsRecorder::log_message(const std::string& topic_str, const std::string& type_name, const std::string& source, const std::string& payload_data, const uint64_t publishTime)
+{
+    if (configuration_.enable_influxdb) {
+        // Construct the line protocol data
+        std::string data = "Log,location=" + source + ",type=" + type_name + ",topic=" + topic_str + 
+                        " value=" + payload_data + " " + std::to_string(publishTime);
+
+        if (curl_) {
+            // Set the POST data
+            curl_easy_setopt(curl_, CURLOPT_POSTFIELDS, data.c_str());
+
+            // Perform the request
+            CURLcode res = curl_easy_perform(curl_);
+
+            // Check for errors
+            if (res != CURLE_OK) {
+                std::cerr << "CURL error: " << curl_easy_strerror(res) << std::endl;
+            }
+        }
+    
+    }
 }
 
 utils::ReturnCode DdsRecorder::reload_configuration(

@@ -73,6 +73,23 @@ constexpr const char* RECORDER_REMOTE_CONTROLLER_INITIAL_STATE_TAG("initial-stat
 constexpr const char* RECORDER_REMOTE_CONTROLLER_COMMAND_TOPIC_NAME_TAG("command-topic-name");
 constexpr const char* RECORDER_REMOTE_CONTROLLER_STATUS_TOPIC_NAME_TAG("status-topic-name");
 
+////////////////////////////////////
+// Security related tags //
+////////////////////////////////////
+constexpr const char* IDENTIFY_CA_FILE_PATH_TAG("identify_ca_fname");
+constexpr const char* IDENTIFY_CERT_FILE_PATH_TAG("identity_cert_fname");
+constexpr const char* IDENTIFY_KEY_FILE_PATH_TAG("identity_key_fname");
+constexpr const char* GOVERNANCE_FILE_PATH_TAG("governance_fname");
+constexpr const char* PERMISSION_FILE_PATH_TAG("permission_fname");
+
+////////////////////////////////////
+// Influxdb config related tags //
+////////////////////////////////////
+constexpr const char* INFLUXDB_SEVER_URL("influxdb-server-url");
+constexpr const char* INFLUXDB_BUCKET("influxdb-bucket");
+constexpr const char* INFLUXDB_ORGANIZATION("influxdb-organization");
+constexpr const char* INFLUXDB_TOKEN("influxdb-token");
+
 ////////////////
 // Specs tags //
 ////////////////

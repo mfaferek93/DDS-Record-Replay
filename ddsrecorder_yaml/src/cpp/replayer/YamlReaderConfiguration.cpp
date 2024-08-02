@@ -136,6 +136,38 @@ void ReplayerConfiguration::load_ddsreplayer_configuration_(
 
         // Don't trigger the DdsPipe's callbacks when discovering or removing external entities
         ddspipe_configuration.discovery_trigger = DiscoveryTrigger::NONE;
+
+        // Get optional identify ca file path
+        if (YamlReader::is_tag_present(yml, IDENTIFY_CA_FILE_PATH_TAG))
+        {
+            replayer_configuration->use_security = true;
+            replayer_configuration->identify_ca_fname = "file://" + YamlReader::get<std::string>(yml, IDENTIFY_CA_FILE_PATH_TAG, version);
+            std::cout << "Identify ca file path: " << replayer_configuration->identify_ca_fname << std::endl;
+        }
+        // Get optional identify cert file path
+        if (YamlReader::is_tag_present(yml, IDENTIFY_CERT_FILE_PATH_TAG))
+        {
+            replayer_configuration->identity_cert_fname = "file://" + YamlReader::get<std::string>(yml, IDENTIFY_CERT_FILE_PATH_TAG, version);
+            std::cout << "Identify cert file path: " << replayer_configuration->identity_cert_fname << std::endl;
+        }
+        // Get optional identify key file path
+        if (YamlReader::is_tag_present(yml, IDENTIFY_KEY_FILE_PATH_TAG))
+        {
+            replayer_configuration->identity_key_fname = "file://" + YamlReader::get<std::string>(yml, IDENTIFY_KEY_FILE_PATH_TAG, version);
+            std::cout << "Key file path: " << replayer_configuration->identity_key_fname << std::endl;
+        }
+        // Get optional governance file path
+        if (YamlReader::is_tag_present(yml, GOVERNANCE_FILE_PATH_TAG))
+        {
+            replayer_configuration->governance_fname = "file://" + YamlReader::get<std::string>(yml, GOVERNANCE_FILE_PATH_TAG, version);
+            std::cout << "Governance file path: " << replayer_configuration->governance_fname << std::endl;
+        }
+        // Get optional permission file path
+        if (YamlReader::is_tag_present(yml, PERMISSION_FILE_PATH_TAG))
+        {
+            replayer_configuration->permission_fname = "file://" + YamlReader::get<std::string>(yml, PERMISSION_FILE_PATH_TAG, version);
+            std::cout << "Permission file path: " << replayer_configuration->permission_fname << std::endl;
+        }
     }
     catch (const std::exception& e)
     {

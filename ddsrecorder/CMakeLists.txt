@@ -25,6 +25,7 @@ enable_language(CXX)
 ###############################################################################
 # Package cmake_utils is required to get every cmake macro needed
 find_package(cmake_utils REQUIRED)
+find_package(CURL REQUIRED)
 
 ###############################################################################
 # Project
@@ -60,6 +61,12 @@ project(
 # - Configure log depending on LOG_INFO flag and CMake type
 configure_project_cpp()
 
+set(MODULE_DEPENDENCIES
+    ${MODULE_FIND_PACKAGES}
+    CURL::libcurl
+)
+
+
 # Determine Fast DDS version
 if ("${fastrtps_VERSION}" VERSION_LESS 2.13)
     set(DDS_TYPES_VERSION "v1")
@@ -75,6 +82,7 @@ file(
         "${PROJECT_SOURCE_DIR}/src/cpp/command_receiver/Command*.cpp"
         "${PROJECT_SOURCE_DIR}/src/cpp/*/*/${DDS_TYPES_VERSION}/*/*.cxx"
     )
+
 
 compile_tool(
     "${PROJECT_SOURCE_DIR}/src/cpp/" # Source directory
